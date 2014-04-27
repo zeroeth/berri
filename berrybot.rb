@@ -17,7 +17,8 @@ module App
 
   setup ENV["BERRI_LOGIN"], ENV["BERRI_PASSWORD"]
 
-  catz = File.read("catz.emoticons").split("\n")
+  catz   = File.read("catz.emoticons").split("\n")
+  dances = File.read("dance.links"   ).split("\n")
 
 
   when_ready do
@@ -54,8 +55,16 @@ module App
 
   ### NORMAL CHAT ########################
 
-  message :chat?, :body => 'meow' do |m|
+  message :chat?, :body => /meow/i do |m|
     say m.from.strip!, catz.sample
+  end
+
+  message :chat?, :body => /nyan/i do |m|
+    say m.from.strip!, "http://fc00.deviantart.net/fs71/f/2011/310/5/a/giant_nyan_cat_by_daieny-d4fc8u1.png"
+  end
+
+  message :chat?, :body => /dance/i do |m|
+    say m.from.strip!, %{<img src="#{dances.sample}">}
   end
 
 
