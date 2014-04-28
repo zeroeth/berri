@@ -64,7 +64,7 @@ module App
   end
 
   message :chat?, :body => /dance/i do |m|
-    say m.from.strip!, %{<img src="#{dances.sample}">}
+    say m.from.strip!, dances.sample
   end
 
 
