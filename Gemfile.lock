@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/fourks/dorothy.git
-  revision: 061953ccacbfedc1b8a91222666477fc56ee38dc
+  revision: a7e275cca83c57b9fab5489253b7e93cf1496578
   specs:
     dorothy (0.0.2.pre)
 
