@@ -54,6 +54,12 @@ module App
 
 
   ### NORMAL CHAT ########################
+  message :chat?, :body => /basik/i do |m|
+    basik = Basik::BundledGem.new
+
+    say m.from.strip!, basik.show_cext_greeting
+    say m.from.strip!, basik.show_ruby_greeting
+  end
 
   message :chat?, :body => /meow/i do |m|
     say m.from.strip!, catz.sample

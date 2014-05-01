@@ -1,8 +1,8 @@
 GIT
-  remote: https://github.com/fourks/dorothy.git
-  revision: 50deda24a6c412c26c4292f5a786929f4bed488e
+  remote: https://github.com/zeroeth/basik.git
+  revision: 8d164a5b1d8b2272e382ffa4d9426d2071dabb23
   specs:
-    dorothy (0.0.2.pre)
+    basik (0.0.3)
 
 GEM
   remote: https://rubygems.org/
@@ -51,7 +51,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  basik!
   blather
   colored
-  dorothy!
   pry
