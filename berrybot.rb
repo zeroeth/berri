@@ -92,6 +92,8 @@ module App
   message :chat?, :body => /warp speed/i do |m|
     star = $starz.sample
     say m.from.strip!, "#{star["starName"]} is #{star["dist"]} light years away"
+
+    halt
   end
 
   message :chat?, :body => /basik/i do |m|
@@ -99,18 +101,26 @@ module App
 
     say m.from.strip!, basik.show_cext_greeting
     say m.from.strip!, basik.show_ruby_greeting
+
+    halt
   end
 
   message :chat?, :body => /meow/i do |m|
     say m.from.strip!, $catz.sample
+
+    halt
   end
 
   message :chat?, :body => /nyan/i do |m|
     say m.from.strip!, "http://fc00.deviantart.net/fs71/f/2011/310/5/a/giant_nyan_cat_by_daieny-d4fc8u1.png"
+
+    halt
   end
 
   message :chat?, :body => /dance/i do |m|
     say m.from.strip!, $dances.sample
+
+    halt
   end
 
 
@@ -122,6 +132,8 @@ module App
         say m.from.strip!, "- #{item.name} (#{item.jid})"
       end
     end
+
+    halt
   end
 
 
