@@ -72,6 +72,12 @@ module App
 
 
   ### NORMAL CHAT ########################
+  message :chat?, :body => /play fluffy/i do |m|
+    machine = Z::Machine.new "fluffy.z5"
+    machine.run
+
+    say m.from.strip!, machine.output
+  end
 
   message :chat?, :body => /warp speed/i do |m|
     star = $starz.sample
