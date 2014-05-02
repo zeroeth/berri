@@ -3,26 +3,36 @@ require 'bundler/setup'
 Bundler.require(:default)
 
 require 'blather/client/dsl'
+require 'json'
 
 # Heroku log flush
 $stdout.sync = true
 
+
+$catz   = File.read("catz.emoticons").split("\n")
+$dances = File.read("dance.links"   ).split("\n")
+$starz  = JSON.parse(File.read("stars_named.json"))
+
 module App
   extend Blather::DSL
 
+
   def self.run
-    EM.run { client.run }
+    EM.run do
+      client.run
+
+      EM.add_periodic_timer(17 * 60) { random_status if Random.rand > 0.75 }
+    end
   end
 
 
   setup ENV["BERRI_LOGIN"], ENV["BERRI_PASSWORD"]
 
-  catz   = File.read("catz.emoticons").split("\n")
-  dances = File.read("dance.links"   ).split("\n")
-
 
   when_ready do
     puts "CONNECTED"
+
+    random_status
   end
 
 
@@ -34,6 +44,14 @@ module App
   # Before all things
   before do |s|
     # puts "STANZA " + "[#{s.class}::#{s.type}]".red + " #{s.inspect}".cyan
+  end
+
+
+  ### TIME EVENTS ########################
+
+  def self.random_status
+    star = $starz.sample
+    set_status :available, "Heading to #{star["starName"]}, see you in #{star["dist"]} light years."
   end
 
 
@@ -54,6 +72,12 @@ module App
 
 
   ### NORMAL CHAT ########################
+
+  message :chat?, :body => /warp speed/i do |m|
+    star = $starz.sample
+    say m.from.strip!, "#{star["starName"]} is #{star["dist"]} light years away"
+  end
+
   message :chat?, :body => /basik/i do |m|
     basik = Basik::BundledGem.new
 
@@ -62,7 +86,7 @@ module App
   end
 
   message :chat?, :body => /meow/i do |m|
-    say m.from.strip!, catz.sample
+    say m.from.strip!, $catz.sample
   end
 
   message :chat?, :body => /nyan/i do |m|
@@ -70,7 +94,7 @@ module App
   end
 
   message :chat?, :body => /dance/i do |m|
-    say m.from.strip!, dances.sample
+    say m.from.strip!, $dances.sample
   end
 
 
@@ -85,6 +109,8 @@ module App
   end
 
 
+  # TODO message dictionary of user entered regex events. Store in json or text file?
+  # TODO handle passing or halting message to other events in order
   message :chat?, :body do |m|
     # The request that comes from google hangouts
     if m.class != Blather::Stanza::Message::MUCUser
