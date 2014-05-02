@@ -13,6 +13,8 @@ $catz   = File.read("catz.emoticons").split("\n")
 $dances = File.read("dance.links"   ).split("\n")
 $starz  = JSON.parse(File.read("stars_named.json"))
 
+$machines = {}
+
 module App
   extend Blather::DSL
 
@@ -73,10 +75,18 @@ module App
 
   ### NORMAL CHAT ########################
   message :chat?, :body => /play fluffy/i do |m|
-    machine = Z::Machine.new "fluffy.z5"
+    machine = $machines[m.from.strip!.to_s] = Z::Machine.new "fluffy.z5"
     machine.run
 
-    say m.from.strip!, machine.output
+    say m.from.strip!, machine.output.join
+
+    machine.output.clear
+  end
+
+  message :chat?, :body => /(stop|quit)/i do |m|
+    $machines[m.from.strip!.to_s] = nil
+
+    say m.from.strip!, '* fluffy falls into a black hole *'
   end
 
   message :chat?, :body => /warp speed/i do |m|
@@ -106,10 +116,10 @@ module App
 
   message :chat?, :body => 'roster' do |m|
     my_roster.grouped.each do |group, items|
-      say m.from, "*** #{group || 'Ungrouped'} ***"
+      say m.from.strip!, "*** #{group || 'Ungrouped'} ***"
 
       items.each do |item|
-        say m.from, "- #{item.name} (#{item.jid})"
+        say m.from.strip!, "- #{item.name} (#{item.jid})"
       end
     end
   end
@@ -121,6 +131,14 @@ module App
     # The request that comes from google hangouts
     if m.class != Blather::Stanza::Message::MUCUser
       puts "CHAT #{m.class} #{m.from}: #{m.body}".blue
+
+      machine = $machines[m.from.strip!.to_s]
+      if machine
+        machine.keyboard << m.body + "\n"
+        machine.run
+        say m.from.strip!, machine.output.join
+        machine.output.clear
+      end
     end
   end
 
