@@ -83,6 +83,16 @@ module App
     machine.output.clear
   end
 
+  # FIXME capture group?/parameter
+  message :chat?, :body => /play zork/i do |m|
+    machine = $machines[m.from.strip!.to_s] = Z::Machine.new "zork1.z3"
+    machine.run
+
+    say m.from.strip!, machine.output.join
+
+    machine.output.clear
+  end
+
   message :chat?, :body => /(stop|quit)/i do |m|
     $machines[m.from.strip!.to_s] = nil
 
